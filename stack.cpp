@@ -12,7 +12,7 @@ typedef struct Stack1 {
 St *CreateStack(int length) {
     St *p = (St *) malloc(sizeof(St));
     if (!p) return NULL;
-    p->data = (int *) malloc(sizeof(int));
+    p->data = (int *) malloc(length * sizeof(int));
     //p->Top = -1;
     p->Top = 0;
     p->Bottom = 0;
@@ -38,5 +38,5 @@ int GetTop(St *stack, int *value) {
     if (stack->Top == stack->Bottom) return 0;
     int index = stack->Top - 1;
     (*value) = stack->data[index];
-    return 1
+    return 1;
 }
