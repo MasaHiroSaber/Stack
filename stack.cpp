@@ -1,95 +1,93 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "time.h"
+#include<cstdio>
+#include<cstdlib>
+#include "stack.h"
 
+using namespace std;
 
-typedef struct Stack1
+struct OPNDstack *CreateOPNDStack(int length)
 {
-    int *data;
-    int Top;
-    int Bottom;
-    int Size;
-} St;
-
-
-St *CreateStack(int length)
-{
-    St *p = (St *) malloc(sizeof(St));
-    if (!p) return NULL;
-    p->data = (int *) malloc(sizeof(int));
-    //p->Top = -1;
-    p->Top = 0;
-    p->Bottom = 0;
-    p->Size = length;
-    return p;
+    struct OPNDstack *opndstack = (OPNDstack *)malloc(sizeof(OPNDstack));
+    if (!opndstack) return NULL;
+    opndstack->stack = (int *)malloc(length * sizeof(int));
+    opndstack->bottom = opndstack->top = 0;
+    opndstack->length = length;
+    return opndstack;
 }
 
-int Push(St *stack, int value)
+struct OPTRstack *CreateOPTRStack(int length)
 {
-    if (((stack->Top) - (stack->Bottom)) == (stack->Size) - 1)
-        return 0;
-    //stack -> data[++stack->Top] = value;
-    stack->data[stack->Top++] = value;
-    return 1;
+    struct OPTRstack *optrstack = (OPTRstack *)malloc(sizeof(OPTRstack));
+    if (!optrstack) return NULL;
+    optrstack->stack = (char *)malloc(length * sizeof(char));
+    optrstack->bottom = optrstack->top = 0;
+    optrstack->length = length;
+    return optrstack;
 }
 
-int Pop(St *stack, int *value)
+void Push(struct OPNDstack *opndstack, int item) //压入数据
 {
-    if (stack->Top == stack->Bottom) return 0;
-    (*value) = stack->data[--stack->Top];
-    return 1;
-}
-
-int GetTop(St *stack, int *value)
-{
-    if (stack->Top == stack->Bottom) return 0;
-    int index = stack->Top - 1;
-    (*value) = stack->data[index];
-    return 1;
-}
-
-void OutPut(St *stack)
-{
-    int length = (stack->Top - stack->Bottom);
-    for (int i = 0; i < length; i++)
-    {                 // 0 1 2 3 4 5
-        int value = stack->data[length - i - 1];
-        printf("\tPosition:%d Value:%d\n", length - i - 1, value);
-    }
-}
-
-int main()
-{
-    srand(time(0));
-#define LENGTH 10
-    St *stack = CreateStack(LENGTH);
-    for (auto i = 0; i < LENGTH; i++)
+    if((opndstack->top - opndstack->bottom) >= (opndstack->length - 1))
     {
-        int op = rand() % 4;
-        int value = 1 + rand() % 10;
-        int *getvalue = NULL;
-        switch (op)
-        {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            {
-                int code = Push(stack, value);
-                if (code == 0) printf("ERROR\n");
-                else printf("SUCCESS PUSH\n");
-                break;
-            }
-
-//            case 3: {
-//                int code = Pop(stack, getvalue);
-//                if (code == 0) printf("ERROR\n");
-//                else printf("SUCCESS POP\n");
-//            }
-
-        }
-        OutPut(stack);
+        printf("ERROR! The stack is full!\n");
+        return;
     }
-    free(stack);
-    return 0;
+    printf("Push %d into the OPND stack!\n", item);
+    opndstack->stack[opndstack->top++] = item;
+}
+
+void Push(struct OPTRstack *optrstack, char item)
+{
+    if((optrstack->top - optrstack->bottom) >= (optrstack->length - 1))
+    {
+        printf("ERROR! The stack is full!\n");
+        return;
+    }
+    printf("Push %c into the OPTR stack!\n", item);
+    optrstack->stack[optrstack->top++] = item;
+}
+
+int GetTop(struct OPNDstack *opndstack)
+{
+    if(opndstack->top == opndstack->bottom)
+    {
+        printf("ERROR! The stack is empty!\n");
+        return -1;
+    }
+    int temp = opndstack->top - 1;
+    return opndstack->stack[temp];
+}
+
+char GetTop(struct OPTRstack *optrstack)
+{
+    if(optrstack->top == optrstack->bottom)
+    {
+        printf("ERROR! The stack is empty!\n");
+        return '#';
+    }
+    int temp = optrstack->top - 1;
+    return optrstack->stack[temp];
+}
+
+int Pop(struct OPNDstack *opndstack)
+{
+    if(opndstack->top == opndstack->bottom)
+    {
+        printf("ERROR! The stack is empty!\n");
+        return -1;
+    }
+    int topData = opndstack->stack[--opndstack->top];
+    printf("Pop %d from the OPND stack!\n", topData);
+    return topData;
+}
+
+char Pop(struct OPTRstack *optrstack)
+{
+    if(optrstack->top == optrstack->bottom)
+    {
+        printf("ERROR! The stack is empty!\n");
+        return '#';
+    }
+    char c = optrstack->stack[--optrstack->top];
+    printf("Pop %c from the OPTR stack!\n", c);
+    return c;
 }

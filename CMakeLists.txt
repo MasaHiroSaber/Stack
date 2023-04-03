@@ -3,4 +3,4 @@ project(stack)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(stack stack.cpp)
+add_executable(stack stack.cpp stack.h expression.h Expression.cpp ComputeExpress.cpp)
