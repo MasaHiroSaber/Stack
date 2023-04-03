@@ -24,14 +24,14 @@ struct OPTRstack *CreateOPTRStack(int length)
     return optrstack;
 }
 
-void Push(struct OPNDstack *opndstack, int item) //鍘嬪叆鏁版嵁
+void Push(struct OPNDstack *opndstack, int item) //压入数据
 {
     if((opndstack->top - opndstack->bottom) >= (opndstack->length - 1))
     {
         printf("ERROR! The stack is full!\n");
         return;
     }
-    printf("Push %d into the OPND stack!\n", item);
+    printf("将 %d 压入到数字栈!\n", item);
     opndstack->stack[opndstack->top++] = item;
 }
 
@@ -42,7 +42,7 @@ void Push(struct OPTRstack *optrstack, char item)
         printf("ERROR! The stack is full!\n");
         return;
     }
-    printf("Push %c into the OPTR stack!\n", item);
+    printf("将 %c 压入到操作符栈!\n", item);
     optrstack->stack[optrstack->top++] = item;
 }
 
@@ -76,7 +76,7 @@ int Pop(struct OPNDstack *opndstack)
         return -1;
     }
     int topData = opndstack->stack[--opndstack->top];
-    printf("Pop %d from the OPND stack!\n", topData);
+    printf("将 %d 从数字栈中弹出!\n", topData);
     return topData;
 }
 
@@ -88,6 +88,6 @@ char Pop(struct OPTRstack *optrstack)
         return '#';
     }
     char c = optrstack->stack[--optrstack->top];
-    printf("Pop %c from the OPTR stack!\n", c);
+    printf("将 %c 从操作符栈中弹出!\n", c);
     return c;
 }

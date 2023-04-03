@@ -4,62 +4,104 @@
 #include "stack.h"
 #include "expression.h"
 
-int ComputeExpression(char* expression)     //è®¡ç®—è¡¨è¾¾å¼
+void PrintoptrStack(struct OPTRstack *optrstack)
+{
+    //µ±optrstack->top == optrstack->bottomÊ±,Õ»Îª¿Õ
+    if (optrstack->top == optrstack->bottom)
+    {
+        printf("µ±Ç°ÔËËã·ûÕ»Îª¿Õ!\n");
+        return;
+    }
+
+    printf("µ±Ç°ÔËËã·ûÕ»:");
+    for (int i = 0; i < optrstack->top - optrstack->bottom; i++)
+    {
+        printf(" %c |", optrstack->stack[i]);
+    }
+    printf("\b \n");
+
+}
+
+void PrintopndStack(struct OPNDstack *opndstack)
+{
+    //µ±opndstack->top == opndstack->bottomÊ±,Õ»Îª¿Õ
+    if (opndstack->top == opndstack->bottom)
+    {
+        printf("µ±Ç°Êı×ÖÕ»Îª¿Õ!\n");
+        return;
+    }
+    printf("µ±Ç°Êı×ÖÕ»:");
+    for (int i = 0; i < opndstack->top - opndstack->bottom; i++)
+    {
+        printf(" %d |", opndstack->stack[i]);
+    }
+    printf("\b \n");
+}
+
+int ComputeExpression(char *expression)     //¼ÆËã±í´ïÊ½
 {
     int length = strlen(expression);
-    //åˆ›å»ºä¸¤ä¸ªæ ˆopndå’Œoptr
-    OPNDstack* opndStack = CreateOPNDStack(length);
-    OPTRstack* optrStack = CreateOPTRStack(length);
-    //æ•°æ®çš„è®°å½•
-    int index = 0; //è®°å½•numberçš„ä¸‹æ ‡
-    char* number = (char*)malloc(length * sizeof(char));    //è®°å½•æ•°å­—
-    if (!number) return 0;  //å†…å­˜åˆ†é…å¤±è´¥,è¿”å›0
-    //è¿ç®—ç¬¦ä¼˜å…ˆçº§
+    //´´½¨Á½¸öÕ»opndºÍoptr
+    OPNDstack *opndStack = CreateOPNDStack(length);
+    OPTRstack *optrStack = CreateOPTRStack(length);
+    //Êı¾İµÄ¼ÇÂ¼
+    int index = 0; //¼ÇÂ¼numberµÄÏÂ±ê
+    char *number = (char *) malloc(length * sizeof(char));    //¼ÇÂ¼Êı×Ö
+    if (!number) return 0;  //ÄÚ´æ·ÖÅäÊ§°Ü,·µ»Ø0
+    //ÔËËã·ûÓÅÏÈ¼¶
     int prori = 0;
     for (int i = 0; i < length; i++)
     {
         if (expression[i] >= '0' && expression[i] <= '9')
         {
-            number[index++] = expression[i];    //è®°å½•æ•°å­—
+            number[index++] = expression[i];    //¼ÇÂ¼Êı×Ö
             continue;
         }
-        //ä¸æ˜¯æ•°æ®
-        if (index != 0) //numberä¸­æœ‰æ•°æ®
+        //²»ÊÇÊı¾İ
+        if (index != 0) //numberÖĞÓĞÊı¾İ
         {
-            number[index] = '\0';   //æ·»åŠ ç»“æŸç¬¦
-            int temp = CharToNumber(number);    //å°†å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•°å­—
-            Push(opndStack, temp);  //å°†æ•°å­—å‹å…¥æ ˆä¸­
+            number[index] = '\0';   //Ìí¼Ó½áÊø·û
+            int temp = CharToNumber(number);    //½«×Ö·û´®×ª»»ÎªÊı×Ö
+            Push(opndStack, temp);  //½«Êı×ÖÑ¹ÈëÕ»ÖĞ
+            PrintopndStack(opndStack);
         }
-        //optræ ˆæ˜¯ç©ºçš„
+        //optrÕ»ÊÇ¿ÕµÄ
         if (optrStack->top == optrStack->bottom)
         {
-            Push(optrStack, expression[i]); //å°†è¿ç®—ç¬¦å‹å…¥æ ˆä¸­
+            Push(optrStack, expression[i]); //½«ÔËËã·ûÑ¹ÈëÕ»ÖĞ
+            PrintoptrStack(optrStack);
+            continue;
         }
         do
         {
-            char charinStack = GetTop(optrStack);   //è·å–æ ˆé¡¶è¿ç®—ç¬¦
-            prori = Priori(charinStack, expression[i]); //è·å–ä¼˜å…ˆçº§
-            //å·¦æ‹¬å·å’Œå³æ‹¬å·æŠµæ¶ˆ
+            char charinStack = GetTop(optrStack);   //»ñÈ¡Õ»¶¥ÔËËã·û
+            prori = Priori(charinStack, expression[i]); //»ñÈ¡ÓÅÏÈ¼¶
+            //×óÀ¨ºÅºÍÓÒÀ¨ºÅµÖÏû
             if (prori == 0)
-                Pop(optrStack); //å¼¹å‡ºæ ˆé¡¶è¿ç®—ç¬¦
+            {
+                Pop(optrStack);
+                PrintoptrStack(optrStack);
+            }//µ¯³öÕ»¶¥ÔËËã·û
             else if (prori == 2)
-            {//æ ˆå¤–çš„è¿ç®—ç¬¦ä¼˜å…ˆçº§é«˜äºæ ˆé¡¶è¿ç®—ç¬¦ä¼˜å…ˆçº§
-                Push(optrStack, expression[i]); //å°†è¿ç®—ç¬¦å‹å…¥æ ˆä¸­
-            }
-            else    //prori == 1,æ ˆå¤–çš„è¿ç®—ç¬¦ä¼˜å…ˆçº§ä½äºæ ˆé¡¶è¿ç®—ç¬¦ä¼˜å…ˆçº§
+            {//Õ»ÍâµÄÔËËã·ûÓÅÏÈ¼¶¸ßÓÚÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶
+                Push(optrStack, expression[i]); //½«ÔËËã·ûÑ¹ÈëÕ»ÖĞ
+                PrintoptrStack(optrStack);
+            } else    //prori == 1,Õ»ÍâµÄÔËËã·ûÓÅÏÈ¼¶µÍÓÚÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶
             {//prori == 1
-                char operater = Pop(optrStack); //å¼¹å‡ºæ ˆé¡¶è¿ç®—ç¬¦
-                int rightData = Pop(opndStack); //å¼¹å‡ºæ ˆé¡¶æ•°æ®
-                int leftData = Pop(opndStack);  //å¼¹å‡ºæ ˆé¡¶æ•°æ®
-                int result = Calculate2Number(leftData, operater, rightData);   //è®¡ç®—ç»“æœ
-                Push(opndStack, result);    //å°†ç»“æœå‹å…¥æ•°å­—æ ˆä¸­
+                char operater = Pop(optrStack); //µ¯³öÕ»¶¥ÔËËã·û
+                int rightData = Pop(opndStack); //µ¯³öÕ»¶¥Êı¾İ
+                int leftData = Pop(opndStack);  //µ¯³öÕ»¶¥Êı¾İ
+                int result = Calculate2Number(leftData, operater, rightData);   //¼ÆËã½á¹û
+                printf("¼ÆËã:%d %c %d = %d\n", rightData, operater, leftData, result);
+                Push(opndStack, result);    //½«½á¹ûÑ¹ÈëÊı×ÖÕ»ÖĞ
+                PrintopndStack(opndStack);
+                PrintoptrStack(optrStack);
             }
-        }
-        while (prori == 1);
+        } while (prori == 1);
         index = 0;
     }//end of for (int i = 0; i < length; i++)
     int result = Pop(opndStack);
-    free(opndStack->stack); //é‡Šæ”¾å†…å­˜
+    free(opndStack->stack); //ÊÍ·ÅÄÚ´æ
     free(optrStack->stack);
     free(opndStack);
     free(optrStack);
@@ -71,12 +113,12 @@ int main()
 {
     char express[256];
     express[0] = '(';
-    printf("Plz input an expression:");
+    printf("ÇëÊäÈëÒ»¸ö±í´ïÊ½:");
     scanf_s("%s", &express[1], 254);
     size_t len = strlen(express);
-    express[len] = ')'; //æ·»åŠ å³æ‹¬å·
-    express[len + 1] = '\0'; //æ·»åŠ ç»“æŸç¬¦
+    express[len] = ')'; //Ìí¼ÓÓÒÀ¨ºÅ
+    express[len + 1] = '\0'; //Ìí¼Ó½áÊø·û
     int result = ComputeExpression(express);
-    printf("\nthe result is:%d\n", result);
+    printf("\n¼ÆËã½á¹ûÎª:%d\n", result);
     return 0;
 }

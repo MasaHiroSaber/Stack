@@ -73,14 +73,14 @@ int Calculate2Number(int leftopnd, char optr, int rightopnd)
     }
 }
 
-int CharToNumber(char *s)   //å°†å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•´æ•°
+int CharToNumber(char *s)   //½«×Ö·û´®×ª»»ÎªÕûÊı
 {
     int length = strlen(s);
     int sum = 0;
     for(int i = 0; i < length; i++)
     {
-        sum *= 10;  //æ¯æ¬¡ä¹˜ä»¥10
-        sum += (s[i] - 48); //å°†å­—ç¬¦è½¬æ¢ä¸ºæ•´æ•°, '0'çš„ASCIIç ä¸º48, '1'çš„ASCIIç ä¸º49, '2'çš„ASCIIç ä¸º50, ä»¥æ­¤ç±»æ¨
+        sum *= 10;  //Ã¿´Î³ËÒÔ10
+        sum += (s[i] - 48); //½«×Ö·û×ª»»ÎªÕûÊı, '0'µÄASCIIÂëÎª48, '1'µÄASCIIÂëÎª49, '2'µÄASCIIÂëÎª50, ÒÔ´ËÀàÍÆ
     }
     return sum;
 }
