@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 #include "stack.h"
 #include "expression.h"
 
 void PrintoptrStack(struct OPTRstack *optrstack)
 {
-    //当optrstack->top == optrstack->bottom时,栈为空
     if (optrstack->top == optrstack->bottom)
     {
         printf("当前运算符栈为空!\n");
@@ -70,7 +69,7 @@ int ComputeExpression(char *expression)     //计算表达式
         {
             Push(optrStack, expression[i]); //将运算符压入栈中
             PrintoptrStack(optrStack);
-            continue;
+            continue;   //原代码中没有continue,会多执行一次
         }
         do
         {
